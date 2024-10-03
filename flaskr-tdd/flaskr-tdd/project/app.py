@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+import os
 
 from flask import Flask, g, render_template, request, session, flash, redirect, url_for, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -9,10 +10,20 @@ basedir = Path(__file__).resolve().parent
 
 # configuration
 DATABASE = "flaskr.db"
+dataurl = "postgresql://ece444_deploy_dbtest_a8tn_user:2Nvu8LaEbuLp5LhVT01OezjuLucPRRIp@dpg-crvbhge8ii6s738p992g-a.oregon-postgres.render.com/ece444_deploy_dbtest_a8tn"
+
+url = os.getenv(dataurl, f"sqlite:///{Path(basedir).joinpath(DATABASE)}")
+
+if url.startswith("postgres://"):
+    url = url.replace("postgres://", "postgresql://", 1)
+
+SQLALCHEMY_DATABASE_URI = url
+
+# configuration
+
 USERNAME = "admin"
 PASSWORD = "admin"
 SECRET_KEY = "change_me"
-SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(basedir).joinpath(DATABASE)}'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
